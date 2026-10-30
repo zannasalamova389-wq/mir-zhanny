@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Пальчиковые игры — Мир Жанны</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+
+<!-- ВСТРОЕННЫЕ СТИЛИ (чтобы они точно загрузились) -->
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #fce4ec 0%, #e3f2fd 50%, #f3e5f5 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  color: #333;
+  line-height: 1.6;
+  display: flex;
+  flex-direction: column;
+}
+
+.header { text-align: center; padding: 30px 20px 10px; }
+.header h1 { font-size: 32px; color: #6a1b9a; margin-bottom: 5px; }
+.header p { font-size: 16px; color: #6a1b9a; opacity: 0.85; }
+
+.container { max-width: 900px; margin: 0 auto; width: 100%; padding: 20px; flex: 1; }
+
+.games-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 15px;
+}
+
+.game-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 12px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(106, 27, 154, 0.12);
+  transition: all 0.3s ease;
+  border: 3px solid transparent;
+}
+
+.game-card:hover {
+  transform: translateY(-6px);
+  border-color: #ba68c8;
+  box-shadow: 0 12px 28px rgba(106, 27, 154, 0.22);
+}
+
+.game-card .card-emoji { font-size: 48px; display: block; margin-bottom: 10px; line-height: 1; }
+.game-card .card-title { font-size: 16px; font-weight: bold; color: #6a1b9a; line-height: 1.3; }
+
+.game-content {
+  background: #fff;
+  border-radius: 16px;
+  padding: 25px 20px;
+  box-shadow: 0 6px 18px rgba(106, 27, 154, 0.12);
+  text-align: center;
+  margin-top: 10px;
+}
+
+.game-emoji { font-size: 70px; line-height: 1; margin-bottom: 10px; }
+.game-content h2 { font-size: 26px; color: #6a1b9a; margin-bottom: 5px; }
+.subtitle { font-size: 14px; color: #888; margin-bottom: 20px; }
+.steps { text-align: left; margin-bottom: 20px; }
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  background: #f3e5f5;
+  border-radius: 12px;
+  padding: 12px 15px;
+  margin-bottom: 10px;
+  border-left: 5px solid #ba68c8;
+}
+
+.step-emoji { font-size: 28px; line-height: 1; flex-shrink: 0; }
+.step-text { font-size: 15px; line-height: 1.5; color: #333; padding-top: 3px; }
+
+.back-btn {
+  display: inline-block;
+  background: #fff;
+  color: #6a1b9a;
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(106, 27, 154, 0.15);
+  transition: 0.3s;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+.back-btn:hover { background: #f3e5f5; transform: translateY(-2px); }
+
+.random-btn {
+  background: #ba68c8;
+  border: none;
+  padding: 14px 30px;
+  border-radius: 30px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(186, 104, 200, 0.4);
+  transition: transform 0.15s;
+}
+.random-btn:hover { transform: scale(1.05); background: #ab47bc; }
+.random-btn:active { transform: scale(0.95); }
+
+.hidden { display: none !important; }
+.footer { text-align: center; padding: 20px; font-size: 14px; color: #6a1b9a; opacity: 0.8; }
+
+@media (max-width: 600px) {
+  .header h1 { font-size: 24px; }
+  .game-content h2 { font-size: 22px; }
+  .game-emoji { font-size: 50px; }
+  .games-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .game-card .card-emoji { font-size: 36px; }
+  .game-card .card-title { font-size: 14px; }
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <h1>👐 Пальчиковые игры</h1>
+  <p>Для развития речи и моторики малышей</p>
+</header>
+
+<main class="container">
+  <a href="index.html" class="back-btn">← На главную</a>
+
+  <section id="menuView" class="view">
+    <div class="games-grid" id="gamesGrid"></div>
+  </section>
+
+  <section id="gameView" class="view hidden">
+    <button id="backBtn" class="back-btn">← Все игры</button>
+    <div class="game-content">
+      <div class="game-emoji" id="gameEmoji">🐿️</div>
+      <h2 id="gameTitle"></h2>
+      <p id="gameSubtitle" class="subtitle"></p>
+      <div class="steps" id="gameSteps"></div>
+      <button id="randomBtn" class="random-btn">🎲 Другая игра</button>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <p>© 2026 Жанна Шаломова. Для малышей с любовью ❤️</p>
+</footer>
+
+<!-- ВСТРОЕННЫЙ СКРИПТ (чтобы точно сработал) -->
+<script>
+const fingerGames = [
+  { emoji: "🐦", title: "Сорока-белобока", subtitle: "Классика для самых маленьких (с 1 года)", steps: [
+    { emoji: "👋", text: "Водим указательным пальцем по ладошке малыша круговыми движениями: «Сорока-белобока кашу варила, деток кормила»." },
+    { emoji: "👍", text: "Загибаем большой палец: «Этому дала»." },
+    { emoji: "☝️", text: "Загибаем указательный: «Этому дала»." },
+    { emoji: "🖕", text: "Загибаем средний: «Этому дала»." },
+    { emoji: "🤞", text: "Загибаем безымянный: «Этому дала»." },
+    { emoji: "✊", text: "Загибаем мизинец: «А этому не дала!» — и легонько щекочем ладошку." }
+  ]},
+  { emoji: "👏", title: "Ладушки-ладушки", subtitle: "Первая игра-потешка (с 6 месяцев)", steps: [
+    { emoji: "👏", text: "Берём ручки малыша и хлопаем в ладоши: «Ладушки-ладушки, где были? — У бабушки!»" },
+    { emoji: "🍲", text: "«Что ели? — Кашку. Что пили? — Бражку»." },
+    { emoji: "🤲", text: "Показываем: «Кашка масленька, бражка сладенька»." },
+    { emoji: "🥛", text: "«Бабушка добренька». Гладим по голове: «Попили-поели — домой полетели!»" },
+    { emoji: "🕊️", text: "Машем ручками, как крылышками: «На головку сели, ладушки запели!»" }
+  ]},
+  { emoji: "🐐", title: "Коза рогатая", subtitle: "Весёлая щекотка (с 1,5 лет)", steps: [
+    { emoji: "🤘", text: "Выставляем указательный палец и мизинец — это «рога» козы." },
+    { emoji: "🚶", text: "Двигаем рукой к малышу: «Идёт коза рогатая, идёт коза бодатая»." },
+    { emoji: "🦵", text: "«Ножками топ-топ, глазками хлоп-хлоп»." },
+    { emoji: "🥄", text: "«Кто кашу не ест, кто молоко не пьёт — забодает, забодает!»" },
+    { emoji: "😄", text: "Легонько щекочем малыша «рожками»!" }
+  ]},
+  { emoji: "👆", title: "Этот пальчик", subtitle: "Учим имена пальцев (с 1,5 лет)", steps: [
+    { emoji: "👍", text: "Массируем и загибаем большой палец: «Этот пальчик — дедушка»." },
+    { emoji: "☝️", text: "Загибаем указательный: «Этот пальчик — бабушка»." },
+    { emoji: "🖕", text: "Загибаем средний: «Этот пальчик — папочка»." },
+    { emoji: "🤞", text: "Загибаем безымянный: «Этот пальчик — мамочка»." },
+    { emoji: "✊", text: "Загибаем мизинец: «Этот пальчик — я. Вот и вся моя семья!»" }
+  ]},
+  { emoji: "🕷️", title: "Паучок", subtitle: "Развивает координацию (с 1,5 лет)", steps: [
+    { emoji: "🕷️", text: "«Паучок ходил по ветке, а за ним ходили детки». Перебираем пальчиками по руке малыша." },
+    { emoji: "🌧️", text: "«Дождик с неба вдруг полил» — постукиваем пальцами по ладошке." },
+    { emoji: "💦", text: "«Паучков на землю смыл» — стряхиваем ручки вниз." },
+    { emoji: "☀️", text: "«Солнце стало пригревать» — гладим по спинке." },
+    { emoji: "🕷️", text: "«Паучок ползёт опять» — снова «идём» пальчиками." }
+  ]},
+  { emoji: "🔒", title: "Замок", subtitle: "Тренируем пальчики (с 2 лет)", steps: [
+    { emoji: "🔒", text: "Сцепляем пальцы в «замок»: «На двери висит замок»." },
+    { emoji: "🤝", text: "«Постучали» — постукиваем основаниями ладоней." },
+    { emoji: "🔄", text: "«Покрутили» — крутим кистями в стороны." },
+    { emoji: "💪", text: "«Потянули» — тянем руки в разные стороны." },
+    { emoji: "🔓", text: "«И открыли!» — резко расцепляем пальцы." }
+  ]},
+  { emoji: "🥬", title: "Капуста", subtitle: "Весёлая зарядка (с 2 лет)", steps: [
+    { emoji: "🔪", text: "«Мы капусту рубим-рубим» — ребром ладони стучим по другой ладошке." },
+    { emoji: "🥕", text: "«Мы морковку трём-трём» — трём кулачком по ладошке." },
+    { emoji: "🧂", text: "«Мы капусту солим-солим» — имитируем щепотку соли." },
+    { emoji: "🍋", text: "«Мы капусту жмём-жмём» — сжимаем и разжимаем кулачки." },
+    { emoji: "🥗", text: "«И в баночки кладём!»" }
+  ]},
+  { emoji: "🐱", title: "Котик", subtitle: "Учимся расслаблять ручки (с 1,5 лет)", steps: [
+    { emoji: "✊", text: "Сжимаем кулачок: «Вот кулак, а вот ладошка»." },
+    { emoji: "🐾", text: "«На ладошку села кошка»." },
+    { emoji: "🚶", text: "«И пошла, пошла, пошла» — «шагаем» пальцами по ладошке." },
+    { emoji: "🐭", text: "«Мышку там она нашла!» — щекочем ладошку." },
+    { emoji: "😺", text: "«Мышка в норку убежала» — прячем ручку за спину." }
+  ]},
+  { emoji: "🐭", title: "Мышки-мышки", subtitle: "Игра-догонялки (с 2 лет)", steps: [
+    { emoji: "🐭", text: "«Мышки-мышки, серые штанишки» — перебираем пальчиками по столу." },
+    { emoji: "🧀", text: "«Сыр искали, в норку таскали»." },
+    { emoji: "🐱", text: "«Вот пришёл кот — мышки в норку!»" },
+    { emoji: "🤲", text: "Прячем ручки в кулачки." },
+    { emoji: "😄", text: "«Молодцы, мышки!» — хлопаем в ладоши." }
+  ]},
+  { emoji: "⏰", title: "Часики", subtitle: "Ритм и координация (с 2,5 лет)", steps: [
+    { emoji: "🕐", text: "Показываем пальчиками часики: «Тик-так, тик-так»." },
+    { emoji: "👉", text: "Наклоняем кисти вправо-влево в такт словам." },
+    { emoji: "☀️", text: "«День и ночь стучат, стучат»." },
+    { emoji: "🕰️", text: "«Стрелки кружатся, спешат» — вращаем кистями." },
+    { emoji: "⏰", text: "«Время нас не подождёт!»" }
+  ]}
+];
+
+document.addEventListener('DOMContentLoaded', () => {
+  const menuView = document.getElementById('menuView');
+  const gameView = document.getElementById('gameView');
+  const gamesGrid = document.getElementById('gamesGrid');
+  const gameEmoji = document.getElementById('gameEmoji');
+  const gameTitle = document.getElementById('gameTitle');
+  const gameSubtitle = document.getElementById('gameSubtitle');
+  const gameSteps = document.getElementById('gameSteps');
+
+  if (!gamesGrid) return;
+
+  function renderMenu() {
+    gamesGrid.innerHTML = '';
+    fingerGames.forEach((game, index) => {
+      const card = document.createElement('div');
+      card.className = 'game-card';
+      card.innerHTML = `
+        <span class="card-emoji">${game.emoji}</span>
+        <div class="card-title">${game.title}</div>
+      `;
+      card.addEventListener('click', () => openGame(index));
+      gamesGrid.appendChild(card);
+    });
+  }
+
+  function openGame(index) {
+    const game = fingerGames[index];
+    gameEmoji.textContent = game.emoji;
+    gameTitle.textContent = game.title;
+    gameSubtitle.textContent = game.subtitle;
+    
+    gameSteps.innerHTML = '';
+    game.steps.forEach(step => {
+      const stepEl = document.createElement('div');
+      stepEl.className = 'step';
+      stepEl.innerHTML = `
+        <span class="step-emoji">${step.emoji}</span>
+        <span class="step-text">${step.text}</span>
+      `;
+      gameSteps.appendChild(stepEl);
+    });
+
+    menuView.classList.add('hidden');
+    gameView.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  document.getElementById('backBtn').addEventListener('click', () => {
+    gameView.classList.add('hidden');
+    menuView.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  });
+
+  document.getElementById('randomBtn').addEventListener('click', () => {
+    const randomIndex = Math.floor(Math.random() * fingerGames.length);
+    openGame(randomIndex);
+  });
+
+  renderMenu();
+});
+</script>
+</body>
+</html>
